@@ -37,6 +37,10 @@ services:
     image: prom/mysqld-exporter:latest
     environment:
       - DATA_SOURCE_NAME=root:rootpassword@tcp(db:3306)/information_schema
+    command: 
+     - --config.my-cnf=/cfg/.my.cnf
+    volumes:
+      - ./cgf/.my.cnf:/cfg/.my.cnf
     ports:
       - "9104:9104"
     networks:
