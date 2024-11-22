@@ -6,6 +6,8 @@ from database import insert_data, reset_database
 
 app = Flask(__name__)
 normal_load = True
+# Enable Prometheus metrics
+metrics = PrometheusMetrics(app)
 
 def simulate_normal_load():
     while True:

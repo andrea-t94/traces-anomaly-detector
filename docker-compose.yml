@@ -32,6 +32,16 @@ services:
       - "9090:9090"
     networks:
       - app_network
+  
+  mariadb_exporter:
+    image: bitnami/mysqld-exporter:latest
+    environment:
+      DATA_SOURCE_NAME: root:password@tcp(db:3306)/
+    ports:
+      - "9104:9104"
+    networks:
+      - app_network
+
 
 networks:
   app_network:

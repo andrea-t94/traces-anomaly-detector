@@ -6,3 +6,8 @@ scrape_configs:
     metrics_path: "/metrics"
     static_configs:
       - targets: ["app:5000"]
+  
+  - job_name: 'mariadb'
+    static_configs:
+      - targets: ['mariadb_exporter:9104']
+
