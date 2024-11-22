@@ -34,7 +34,7 @@ services:
       - app_network
   
   mariadb_exporter:
-    image: bitnami/mysqld-exporter:latest
+    image: prom/mysqld-exporter:latest
     environment:
       - DATA_SOURCE_NAME=root:password@tcp(db:3306)/
     ports:
