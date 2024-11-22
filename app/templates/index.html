@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Monitoring</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script>
+        async function sendRequest(endpoint) {
+            const response = await fetch(endpoint, { method: 'POST' });
+            const result = await response.json();
+            alert(result.message);
+        }
+    </script>
+</head>
+<body>
+    <h1>Performance Monitoring App</h1>
+    <button onclick="sendRequest('/heavy-load')">Simulate Heavy Load</button>
+    <button onclick="sendRequest('/crash-db')">Crash Database</button>
+    <button onclick="sendRequest('/restore-normal')">Restore Normal Load</button>
+</body>
+</html>
