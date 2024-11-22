@@ -35,8 +35,8 @@ services:
   
   mariadb_exporter:
     image: prom/mysqld-exporter:latest
-    volumes:
-      - .my.cnf:/etc/mysql/my.cnf
+    environment:
+      - DATA_SOURCE_NAME=root:rootpassword@tcp(db:3306)/information_schema
     ports:
       - "9104:9104"
     networks:
