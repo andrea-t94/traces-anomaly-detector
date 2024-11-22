@@ -1,4 +1,5 @@
 import mariadb
+import random
 
 conn_params = {
     "user": "root",
