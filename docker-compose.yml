@@ -36,7 +36,7 @@ services:
   mariadb_exporter:
     image: prom/mysqld-exporter:latest
     environment:
-      - DATA_SOURCE_NAME=root:rootpassword@tcp(db:3306)/information_schema
+      - DATA_SOURCE_NAME=root:password@tcp(db:3306)/information_schema
     command: 
      - --config.my-cnf=/cfg/.my.cnf
     volumes:
