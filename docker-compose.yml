@@ -36,15 +36,17 @@ services:
   mariadb_exporter:
     image: bitnami/mysqld-exporter:latest
     environment:
-      DATA_SOURCE_NAME: root:password@tcp(db:3306)/
+      - DATA_SOURCE_NAME=root:password@tcp(db:3306)/
     ports:
       - "9104:9104"
     networks:
       - app_network
-
+    depends_on:
+      - db
 
 networks:
   app_network:
+    driver: bridge
 
 volumes:
   db_data:
