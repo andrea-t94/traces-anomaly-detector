@@ -3,6 +3,7 @@ import threading
 import time
 import random
 from database import insert_data, reset_database
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 normal_load = True
