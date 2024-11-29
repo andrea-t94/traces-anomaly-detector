@@ -13,3 +13,4 @@ Those metrics will then be analyzed via a simple stat model and whenever an anom
 Use docker compose to build and run the app.
 At port 5000 there is the app UI to simulate certain DB loads.
 At port 9000 there is the Prometheus dashboard.
+At port 3000 there is Grafana.

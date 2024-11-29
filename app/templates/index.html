@@ -2,21 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Performance Monitoring</title>
+    <title>Simulation Control</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <script>
-        async function sendRequest(endpoint) {
-            const response = await fetch(endpoint, { method: 'POST' });
-            const result = await response.json();
-            alert(result.message);
-        }
-    </script>
 </head>
 <body>
-    <h1>Performance Monitoring App</h1>
-    <button onclick="sendRequest('/heavy-load')">Simulate Heavy Load</button>
-    <button onclick="sendRequest('/crash-db')">Crash Database</button>
-    <button onclick="sendRequest('/restore-normal')">Restore Normal Load</button>
+    <h1>Simulation Control</h1>
+    <button onclick="triggerReadSpike()">Trigger Read Spike</button>
+    <button onclick="triggerWriteSpike()">Trigger Write Spike</button>
+    <button onclick="crashDB()">Crash DB</button>
+    <button onclick="restoreDB()">Restore DB</button>
+
+    <script>
+        async function triggerReadSpike() {
+            await fetch('/trigger_read_spike', { method: 'POST', body: JSON.stringify({ duration: 10 }), headers: { 'Content-Type': 'application/json' } });
+            alert('Read Spike Triggered');
+        }
+
+        async function triggerWriteSpike() {
+            await fetch('/trigger_write_spike', { method: 'POST', body: JSON.stringify({ duration: 10 }), headers: { 'Content-Type': 'application/json' } });
+            alert('Write Spike Triggered');
+        }
+
+        async function crashDB() {
+            await fetch('/crash_db', { method: 'POST' });
+            alert('Database Crashed');
+        }
+
+        async function restoreDB() {
+            await fetch('/restore_db', { method: 'POST' });
+            alert('Database Restored');
+        }
+    </script>
 </body>
 </html>

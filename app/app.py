@@ -1,46 +1,41 @@
-from flask import Flask, request, render_template, jsonify
-import threading
-import time
-import random
-from database import insert_data, reset_database
+from flask import Flask, render_template, request, jsonify
+from prometheus_client import Counter, generate_latest
+from simulation import SimulationManager
 from prometheus_flask_exporter import PrometheusMetrics
+import threading
+
 
 app = Flask(__name__)
-normal_load = True
+simulation_manager = SimulationManager()
 # Enable Prometheus metrics
 metrics = PrometheusMetrics(app)
 
-def simulate_normal_load():
-    while True:
-        if normal_load:
-            insert_data()
-        time.sleep(1)
-
-@app.route("/")
+@app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
-@app.route("/heavy-load", methods=["POST"])
-def heavy_load():
-    global normal_load
-    normal_load = False
-    for _ in range(100):  # Simulate 100 write requests
-        insert_data()
-    return jsonify({"message": "Heavy load simulated"}), 200
+@app.route('/trigger_read_spike', methods=['POST'])
+def trigger_read_spike():
+    duration = int(request.json.get('duration', 10))
+    simulation_manager.trigger_read_spike(duration)
+    return jsonify({"message": "Read spike triggered", "duration": duration})
 
-@app.route("/crash-db", methods=["POST"])
+@app.route('/trigger_write_spike', methods=['POST'])
+def trigger_write_spike():
+    duration = int(request.json.get('duration', 10))
+    simulation_manager.trigger_write_spike(duration)
+    return jsonify({"message": "Write spike triggered", "duration": duration})
+
+@app.route('/crash_db', methods=['POST'])
 def crash_db():
-    global normal_load
-    normal_load = False
-    reset_database()
-    return jsonify({"message": "Database crashed"}), 200
+    simulation_manager.crash_db()
+    return jsonify({"message": "Database crashed"})
 
-@app.route("/restore-normal", methods=["POST"])
-def restore_normal():
-    global normal_load
-    normal_load = True
-    return jsonify({"message": "Normal load restored"}), 200
+@app.route('/restore_db', methods=['POST'])
+def restore_db():
+    simulation_manager.restore_db()
+    return jsonify({"message": "Database restored"})
 
-if __name__ == "__main__":
-    threading.Thread(target=simulate_normal_load, daemon=True).start()
-    app.run(host="0.0.0.0", port=5000)
+if __name__ == '__main__':
+    threading.Thread(target=simulation_manager.run_simulations).start()
+    app.run(host='0.0.0.0', port=5000)

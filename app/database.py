@@ -29,15 +29,14 @@ def insert_data():
         finally:
             conn.close()
 
-def reset_database():
+def read_data():
     conn = get_connection()
     if conn:
         try:
             cursor = conn.cursor()
-            cursor.execute("DROP TABLE IF EXISTS performance_table")
-            cursor.execute("CREATE TABLE performance_table (id INT AUTO_INCREMENT PRIMARY KEY, data INT)")
-            conn.commit()
+            cursor.execute("SELECT data FROM performance_table ORDER BY RAND() LIMIT 1")
+            cursor.fetchall()
         except mariadb.Error as e:
-            print(f"Error resetting database: {e}")
+            print(f"Error reading from database: {e}")
         finally:
             conn.close()

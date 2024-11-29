@@ -40,13 +40,24 @@ services:
     command: 
      - --config.my-cnf=/cfg/.my.cnf
     volumes:
-      - ./cgf/.my.cnf:/cfg/.my.cnf
+      - ./cfg/.my.cnf:/cfg/.my.cnf
     ports:
       - "9104:9104"
     networks:
       - app_network
     depends_on:
       - db
+  
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Set admin password
+    networks:
+      - app_network
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
 
 networks:
   app_network:
