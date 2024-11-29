@@ -5,7 +5,8 @@ The app is integrated with Prometheus to collect metrics.
 Those metrics will then be analyzed via a simple stat model and whenever an anomaly is found, a log with semantical meaning will be created (e.g. anomalous spike of write load for DB).
 
 ## To dos
-1. Fix Prometheus mysqld-exporter, that it's still failing to collect metrics
+1. Fix simulations for read-write ops (should be write heavy)
+2. Add more simulations (e.g. HTTP request, latency and throughtp)
 2. Add the anomaly detection
 3. Add the log converter
 
