@@ -1,41 +1,48 @@
-from flask import Flask, render_template, request, jsonify
-from prometheus_client import Counter, generate_latest
-from simulation import SimulationManager
+from flask import Flask, jsonify, render_template, request
 from prometheus_flask_exporter import PrometheusMetrics
-import threading
-
+from database import insert_data, read_data
 
 app = Flask(__name__)
-simulation_manager = SimulationManager()
-# Enable Prometheus metrics
+
+# Prometheus metrics exporter setup
 metrics = PrometheusMetrics(app)
 
 @app.route('/')
-def index():
+def welcome():
     return render_template('index.html')
 
-@app.route('/trigger_read_spike', methods=['POST'])
-def trigger_read_spike():
-    duration = int(request.json.get('duration', 10))
-    simulation_manager.trigger_read_spike(duration)
-    return jsonify({"message": "Read spike triggered", "duration": duration})
+# Define a route to fetch data from the MariaDB database
+@app.route('/data', methods=['GET'])
+def get_data():
+    # Check if the 'overload' or 'db_issue' query parameters are set
+    overload = request.args.get('overload', 'false').lower() == 'true'
+    db_issue = request.args.get('db_issue', 'false').lower() == 'true'
 
-@app.route('/trigger_write_spike', methods=['POST'])
-def trigger_write_spike():
-    duration = int(request.json.get('duration', 10))
-    simulation_manager.trigger_write_spike(duration)
-    return jsonify({"message": "Write spike triggered", "duration": duration})
+    # Handle overload scenario (50% chance to return 503 Service Unavailable)
+    if overload:
+        if random.random() < 0.5:  # 50% chance of failure
+            return jsonify({"error": "Service Unavailable due to overload"}), 503
 
-@app.route('/crash_db', methods=['POST'])
-def crash_db():
-    simulation_manager.crash_db()
-    return jsonify({"message": "Database crashed"})
+    # Handle database issue scenario (always return 500 Internal Server Error)
+    if db_issue:
+        return jsonify({"error": "Database connection issue"}), 500
 
-@app.route('/restore_db', methods=['POST'])
-def restore_db():
-    simulation_manager.restore_db()
-    return jsonify({"message": "Database restored"})
+    # Normal flow - connecting to the database
+    try:
+        result = read_data()
+        # Convert rows to a dictionary list for JSON response
+        data = [{"value": row[0]} for row in rows]
+        return jsonify(data)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
+# Define a route to check if the application is running
+@app.route('/health', methods=['GET'])
+def health_check():
+    return "Healthy", 200
+
+# Run the application on port 5000
 if __name__ == '__main__':
-    threading.Thread(target=simulation_manager.run_simulations).start()
+    insert_data()
     app.run(host='0.0.0.0', port=5000)

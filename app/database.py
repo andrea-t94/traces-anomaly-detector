@@ -1,5 +1,4 @@
 import mariadb
-import random
 
 conn_params = {
     "user": "root",
@@ -18,25 +17,21 @@ def get_connection():
         return None
 
 def insert_data():
+    """Insert initial data into the database during boot."""
     conn = get_connection()
-    if conn:
-        try:
-            cursor = conn.cursor()
-            cursor.execute("INSERT INTO performance_table (data) VALUES (?)", (random.randint(1, 1000),))
-            conn.commit()
-        except mariadb.Error as e:
-            print(f"Error writing to database: {e}")
-        finally:
-            conn.close()
+    cursor = conn.cursor()
+    for i in range(1, 101):  # Insert 100 rows
+        cursor.execute("INSERT INTO performance_table (data) VALUES (%s)", (f"Sample Data {i}",))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def read_data():
+    """Fetch a random record from the database."""
     conn = get_connection()
-    if conn:
-        try:
-            cursor = conn.cursor()
-            cursor.execute("SELECT data FROM performance_table ORDER BY RAND() LIMIT 1")
-            cursor.fetchall()
-        except mariadb.Error as e:
-            print(f"Error reading from database: {e}")
-        finally:
-            conn.close()
+    cursor = conn.cursor()
+    cursor.execute("SELECT data FROM performance_table")
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result

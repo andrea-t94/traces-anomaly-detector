@@ -7,7 +7,7 @@ scrape_configs:
     static_configs:
       - targets: ["app:5000"]
   
-  - job_name: 'mariadb'
+  - job_name: 'mariadb_exporter'
     static_configs:
       - targets: ['mariadb_exporter:9104']
 

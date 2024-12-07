@@ -2,36 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Simulation Control</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Simulation Control</h1>
-    <button onclick="triggerReadSpike()">Trigger Read Spike</button>
-    <button onclick="triggerWriteSpike()">Trigger Write Spike</button>
-    <button onclick="crashDB()">Crash DB</button>
-    <button onclick="restoreDB()">Restore DB</button>
-
-    <script>
-        async function triggerReadSpike() {
-            await fetch('/trigger_read_spike', { method: 'POST', body: JSON.stringify({ duration: 10 }), headers: { 'Content-Type': 'application/json' } });
-            alert('Read Spike Triggered');
-        }
-
-        async function triggerWriteSpike() {
-            await fetch('/trigger_write_spike', { method: 'POST', body: JSON.stringify({ duration: 10 }), headers: { 'Content-Type': 'application/json' } });
-            alert('Write Spike Triggered');
-        }
-
-        async function crashDB() {
-            await fetch('/crash_db', { method: 'POST' });
-            alert('Database Crashed');
-        }
-
-        async function restoreDB() {
-            await fetch('/restore_db', { method: 'POST' });
-            alert('Database Restored');
-        }
-    </script>
+    <h1>Welcome to the app</h1>
 </body>
 </html>
