@@ -5,10 +5,13 @@ The app is integrated with Prometheus to collect metrics.
 Those metrics will then be analyzed via a simple stat model and whenever an anomaly is found, a log with semantical meaning will be created (e.g. anomalous spike of write load for DB).
 
 ## To dos
-1. Fix simulations for read-write ops (should be write heavy)
-2. Add more simulations (e.g. HTTP request, latency and throughtp)
-2. Add the anomaly detection
-3. Add the log converter
+0. Start from v3 - Fix prometheus metrics extractor for Flask (in master works)
+1. Add real db connection issue when db_issu=true by setting wrong password so that prometheus will track it
+2. Add logs and metrics to be saved periodically (every 5s) in a txt file
+3. first client script that call API get_data with 10 requests/second per 3 minutes and then simulates x10 requests per 1 minute with overload=true
+4. second client script that does the same and, after 3m, set db_issue=true
+5. Generate data = log.txt, metrics.txt (plan b: simulate fake data using chatGPT), context for metrics and logs (via chatGPT) 
+6. Bootstrap lightRAG with logs and metrics context
 
 ### How to run
 Use docker compose to build and run the app.
