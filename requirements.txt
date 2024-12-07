@@ -2,3 +2,4 @@ Flask==2.3.2
 mariadb==1.1.4
 prometheus_client==0.16.0
 prometheus-flask-exporter
+flask-cors

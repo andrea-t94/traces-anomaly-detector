@@ -35,7 +35,8 @@ def read_data():
         try:
             cursor = conn.cursor()
             cursor.execute("SELECT data FROM performance_table ORDER BY RAND() LIMIT 1")
-            cursor.fetchall()
+            result = cursor.fetchall()
+            return result
         except mariadb.Error as e:
             print(f"Error reading from database: {e}")
         finally:

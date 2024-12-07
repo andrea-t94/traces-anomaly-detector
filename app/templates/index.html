@@ -2,36 +2,93 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Simulation Control</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin: 20px 0;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e0f7fa;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 600px;
+            word-wrap: break-word;
+        }
+        select, button {
+            padding: 10px;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Simulation Control</h1>
-    <button onclick="triggerReadSpike()">Trigger Read Spike</button>
-    <button onclick="triggerWriteSpike()">Trigger Write Spike</button>
-    <button onclick="crashDB()">Crash DB</button>
-    <button onclick="restoreDB()">Restore DB</button>
+    <h1>Welcome to the app</h1>
+
+    <form id="dataForm">
+        <select id="issueSelect">
+            <option value="none">No Issue</option>
+            <option value="overload">Overload (50% chance of 503)</option>
+            <option value="db_issue">Database Issue (always 500)</option>
+        </select>
+        <button type="submit">Fetch Data</button>
+    </form>
+
+    <div id="result">Results will appear here...</div>
 
     <script>
-        async function triggerReadSpike() {
-            await fetch('/trigger_read_spike', { method: 'POST', body: JSON.stringify({ duration: 10 }), headers: { 'Content-Type': 'application/json' } });
-            alert('Read Spike Triggered');
-        }
+        document.getElementById("dataForm").addEventListener("submit", function(event) {
+            event.preventDefault();
 
-        async function triggerWriteSpike() {
-            await fetch('/trigger_write_spike', { method: 'POST', body: JSON.stringify({ duration: 10 }), headers: { 'Content-Type': 'application/json' } });
-            alert('Write Spike Triggered');
-        }
+            const issueType = document.getElementById("issueSelect").value;
+            let url = '/data';
 
-        async function crashDB() {
-            await fetch('/crash_db', { method: 'POST' });
-            alert('Database Crashed');
-        }
+            if (issueType === 'overload') {
+                url += '?overload=true';
+            } else if (issueType === 'db_issue') {
+                url += '?db_issue=true';
+            }
 
-        async function restoreDB() {
-            await fetch('/restore_db', { method: 'POST' });
-            alert('Database Restored');
-        }
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+                })
+                .then(data => {
+                    const resultDiv = document.getElementById('result');
+                    if (Array.isArray(data) && data.length > 0) {
+                        let html = '<ul>';
+                        data.forEach(item => {
+                            html += `<li>Value: ${item.value}</li>`;
+                        });
+                        html += '</ul>';
+                        resultDiv.innerHTML = html;
+                    } else {
+                        resultDiv.innerHTML = 'No data found.';
+                    }
+                })
+                .catch(error => {
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = `Error: ${error.message}`;
+                });
+        });
     </script>
 </body>
 </html>
