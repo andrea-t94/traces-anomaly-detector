@@ -6,8 +6,8 @@ Those metrics will then be analyzed via a simple stat model and whenever an anom
 
 ## To dos
 0. Start from v3 - Fix prometheus metrics extractor for Flask (in master works)
-1. Add real db connection issue when db_issu=true by setting wrong password so that prometheus will track it
-2. Add logs and metrics to be saved periodically (every 5s) in a txt file
+1. Add real db connection issue when db_issu=true (by setting wrong password so that prometheus will track it OR make db crash for real)
+2. Add logs (customize flask logs + db logs) and metrics to be saved periodically (every 5s) in a txt file
 3. first client script that call API get_data with 10 requests/second per 3 minutes and then simulates x10 requests per 1 minute with overload=true
 4. second client script that does the same and, after 3m, set db_issue=true
 5. Generate data = log.txt, metrics.txt (plan b: simulate fake data using chatGPT), context for metrics and logs (via chatGPT) 
